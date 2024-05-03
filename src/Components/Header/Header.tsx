@@ -1,18 +1,29 @@
-import React from "react";
 import {
   Box,
   Stack,
   Heading,
   Flex,
-  Text,
   Button,
   useDisclosure
 } from "@chakra-ui/react";
+import { useContext } from "react";
+import { AppContext } from "../AppContext";
+import { useNavigate } from "react-router-dom";
+import { changeLocalStorage } from "../../Services/storage";
 
 export const Header = (props: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const handleToggle = () => (isOpen ? onClose() : onOpen());
-  return(
+  const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
+  const navigate = useNavigate()
+
+  const logout = () => {
+    changeLocalStorage({login: false})
+    setIsLoggedIn(false)
+    navigate('/')
+  }
+
+  return (
     <Flex
       as="nav"
       align="center"
@@ -29,9 +40,7 @@ export const Header = (props: any) => {
         </Heading>
       </Flex>
 
-      <Box display={{ base: "block", md: "none" }} onClick={handleToggle}>
-       
-      </Box>
+      <Box display={{ base: "block", md: "none" }} onClick={handleToggle}></Box>
 
       <Stack
         direction={{ base: "column", md: "row" }}
@@ -40,20 +49,35 @@ export const Header = (props: any) => {
         alignItems="center"
         flexGrow={1}
         mt={{ base: 4, md: 0 }}
-      >
-      </Stack>
+      ></Stack>
 
       <Box
         display={{ base: isOpen ? "block" : "none", md: "block" }}
         mt={{ base: 4, md: 0 }}
       >
-        <Button
-          variant="outline"
-          _hover={{ bg: "teal.700", borderColor: "teal.700" }}
-        >
-          Criar Conta
-        </Button>
+        {!isLoggedIn && (
+          <>
+            <Button
+              variant="outline"
+              _hover={{ bg: "teal.700", borderColor: "teal.700" }}
+            >
+              Criar Conta
+            </Button>
+          </>
+        )}
+
+        {isLoggedIn && (
+          <>
+            <Button
+              marginLeft={4}
+              _hover={{ bg: "teal.700", borderColor: "teal.700" }}
+              onClick={() => logout()}
+            >
+              Sair
+            </Button>
+          </>
+        )}
       </Box>
     </Flex>
-    );
+  );
 };

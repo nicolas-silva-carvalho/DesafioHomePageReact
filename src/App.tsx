@@ -1,26 +1,25 @@
-import {
-  Box,
-  Button,
-  Center,
-  ChakraProvider,
-  Container,
-  FormControl,
-  FormLabel,
-  Input,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { login } from "./Services/login";
-import { Card } from "./Components/Card";
+import { BrowserRouter } from "react-router-dom";
+import { ChakraProvider } from "@chakra-ui/react";
 import { Layout } from "./Components/Layout";
+import { AppContextProvider } from "./Components/AppContext";
+import MainRoutes from "./routes";
+import { createLocalStorage, getAllLocalStorage } from "./Services/storage";
 
 function App() {
+  if (!getAllLocalStorage()) {
+    createLocalStorage();
+  }
+
   return (
-    <ChakraProvider >
-      <Layout >
-        <Card id={2} paragraph="Teste" details="Teste" />
-      </Layout>
-    </ChakraProvider>
+    <BrowserRouter>
+      <AppContextProvider>
+        <ChakraProvider>
+          <Layout>
+            <MainRoutes />
+          </Layout>
+        </ChakraProvider>
+      </AppContextProvider>
+    </BrowserRouter>
   );
 }
 
